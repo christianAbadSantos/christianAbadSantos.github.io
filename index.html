@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gemelo Digital de Barcelona</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a cartographer's sheet. Left-aligned column, a legend-style
+   margin of labels, and the data-source table as the centrepiece. */
+:root{
+  --paper:#f3f5f2;
+  --sheet:#ffffff;
+  --ink:#14263b;
+  --muted:#5b6b7c;
+  --rule:#d5dcd9;
+  --accent:#0c6f7a;      /* harbour teal */
+  --accent-ink:#ffffff;
+  --real:#1d7a46;
+  --real-bg:#e2f2e8;
+  --sim:#8a5a00;
+  --sim-bg:#f8ecd0;
+  --off:#5b6b7c;
+  --off-bg:#e6eaec;
+  --display:"Archivo","Arial Narrow",Arial,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0e1822;--sheet:#15222f;--ink:#e6edf2;--muted:#9aa9b7;--rule:#293848;
+    --accent:#4fc3cf;--accent-ink:#06222a;
+    --real:#6fd49a;--real-bg:#153526;--sim:#e9be62;--sim-bg:#3a2e12;--off:#9aa9b7;--off-bg:#243240;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0e1822;--sheet:#15222f;--ink:#e6edf2;--muted:#9aa9b7;--rule:#293848;
+  --accent:#4fc3cf;--accent-ink:#06222a;
+  --real:#6fd49a;--real-bg:#153526;--sim:#e9be62;--sim-bg:#3a2e12;--off:#9aa9b7;--off-bg:#243240;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6}
+a{color:var(--accent)}
+a:focus-visible,.btn:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header{padding:44px 0 28px;border-bottom:1px solid var(--rule)}
+.coord{font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.02em;margin:0 0 14px}
+h1{font-family:var(--display);font-stretch:85%;font-weight:800;font-size:clamp(38px,7vw,68px);line-height:1;margin:0 0 16px;text-wrap:balance;letter-spacing:-.01em}
+.lede{font-size:20px;max-width:62ch;margin:0 0 24px;color:var(--ink)}
+.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{display:inline-block;padding:11px 18px;border-radius:4px;font-weight:600;text-decoration:none;font-size:16px;border:1.5px solid var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{color:var(--accent);background:transparent}
+.by{color:var(--muted);font-size:15px}
+section{padding:40px 0;border-bottom:1px solid var(--rule)}
+section:last-of-type{border-bottom:0}
+.grid{display:grid;grid-template-columns:190px 1fr;gap:28px}
+h2{font-family:var(--display);font-stretch:85%;font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:4px 0 0}
+.content>p{max-width:65ch;margin:0 0 14px}
+figure{margin:0}
+.shot{border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--sheet)}
+.shot img{display:block;width:100%;max-width:100%;height:auto}
+figcaption{font-size:14px;color:var(--muted);margin-top:8px}
+.shots{display:grid;grid-template-columns:1fr;gap:22px}
+.figs{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--rule);border-radius:6px;background:var(--sheet);margin-top:26px}
+.fig{padding:16px 18px;border-right:1px solid var(--rule)}
+.fig:last-child{border-right:0}
+.fig b{display:block;font-family:var(--display);font-stretch:85%;font-weight:800;font-size:34px;line-height:1.05;font-variant-numeric:tabular-nums}
+.fig span{font-size:14px;color:var(--muted)}
+ul.feat{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:18px 28px}
+ul.feat li{border-top:2px solid var(--ink);padding-top:10px}
+ul.feat strong{display:block;font-weight:600;margin-bottom:2px}
+ul.feat span{color:var(--muted);font-size:16px}
+.pipe{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:6px 0 18px;font-family:var(--mono);font-size:14px}
+.pipe div{background:var(--sheet);border:1px solid var(--rule);border-radius:4px;padding:10px 14px;flex:1 1 150px}
+.pipe div b{display:block;font-family:var(--body);font-size:15px}
+.pipe i{align-self:center;font-style:normal;color:var(--muted)}
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--sheet)}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:15.5px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-size:12.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.proto{font-family:var(--mono);font-size:14px;white-space:nowrap}
+.tag{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:3px;white-space:nowrap}
+.tag.real{color:var(--real);background:var(--real-bg)}
+.tag.sim{color:var(--sim);background:var(--sim-bg)}
+.tag.off{color:var(--off);background:var(--off-bg)}
+.note{font-size:15px;color:var(--muted);max-width:65ch;margin:14px 0 0}
+.stack{display:grid;grid-template-columns:140px 1fr;gap:8px 20px;margin:0}
+.stack dt{font-weight:600}
+.stack dd{margin:0;color:var(--ink)}
+.contact{display:grid;grid-template-columns:120px 1fr;gap:6px 20px;margin:14px 0 0;font-size:16px}
+.contact dt{color:var(--muted)}
+.contact dd{margin:0;font-family:var(--mono);font-size:15px;overflow-wrap:anywhere}
+footer{padding:22px 0 44px;color:var(--muted);font-size:14px}
+@media (max-width:760px){
+  .grid{grid-template-columns:1fr;gap:12px}
+  .figs{grid-template-columns:1fr 1fr}
+  .fig:nth-child(2){border-right:0}
+  .fig:nth-child(-n+2){border-bottom:1px solid var(--rule)}
+  ul.feat{grid-template-columns:1fr}
+  .stack,.contact{grid-template-columns:1fr;gap:2px}
+  .stack dd,.contact dd{margin-bottom:10px}
+  .pipe i{display:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="coord">41.3874° N · 2.1686° E · proyecto personal · 2026</p>
+  <h1>Gemelo Digital de Barcelona</h1>
+  <p class="lede">Una plataforma web que reúne en un mapa 3D lo que está pasando en la ciudad: trenes, tráfico, meteorología, accidentes, residuos y urgencias. Mezcla datos abiertos reales con sensores simulados, y cruza todo con reglas para generar alertas.</p>
+  <div class="actions">
+    <a class="btn primary" href="https://bcn-digital-twin.pages.dev/" target="_blank" rel="noopener">Abrir la demo</a>
+    <a class="btn ghost" href="https://github.com/christianAbadSantos/bcn-digital-twin" target="_blank" rel="noopener">Ver el código en GitHub</a>
+    <span class="by">Christian Abad Santos · desarrollador full stack</span>
+  </div>
+</header>
+
+<section>
+  <div class="shots">
+    <figure>
+      <div class="shot"><img src="mapa.jpg" alt="Vista de mapa 3D de la demo, con indicadores de la ciudad arriba, puntos negros de accidentes a la izquierda, capas activables sobre el mapa y el panel de fuentes de datos a la derecha"></div>
+      <figcaption>Vista de mapa: indicadores en vivo, capas activables y el panel de fuentes de datos con el último mensaje de cada conector.</figcaption>
+    </figure>
+  </div>
+  <div class="figs">
+    <div class="fig"><b>14</b><span>fuentes de datos conectadas</span></div>
+    <div class="fig"><b>7.495</b><span>contenedores reales de la ciudad</span></div>
+    <div class="fig"><b>7.536</b><span>accidentes de 2024 (Guàrdia Urbana)</span></div>
+    <div class="fig"><b>~75</b><span>trenes de Rodalies seguidos en vivo</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="grid">
+    <h2>Qué hace</h2>
+    <div class="content">
+      <ul class="feat">
+        <li><strong>Ciudad en 3D</strong><span>Edificios, relieve del ICGC, ortofoto, metro, árboles y puerto como capas que se encienden y apagan sobre el mapa.</span></li>
+        <li><strong>Trenes y balizas reales</strong><span>Posición de los trenes de Rodalies y balizas V16 encendidas, leídas de los datos abiertos de Renfe y la DGT.</span></li>
+        <li><strong>Alertas con reglas</strong><span>Una regla cruza varias fuentes. Por ejemplo, velocidad baja más un incidente abierto en el mismo cruce dispara una alerta crítica.</span></li>
+        <li><strong>Escenarios</strong><span>Lluvia fuerte, viento de 65 km/h o un choque en Corts Catalanes con Gràcia, para ver cómo reacciona el sistema.</span></li>
+        <li><strong>Recogida de residuos</strong><span>Nivel de llenado por contenedor, planificación de rutas de recogida e indicadores, servidos por una API propia en .NET.</span></li>
+        <li><strong>Urgencias con BIM</strong><span>Ambulancias en ruta hacia el Hospital Clínic, con las bahías de urgencias leídas de un modelo IFC abierto en el navegador.</span></li>
+        <li><strong>Reportes ciudadanos</strong><span>Cualquier persona con sesión iniciada puede marcar una incidencia en el mapa y adjuntar una foto.</span></li>
+        <li><strong>Panel de control</strong><span>Resumen de operaciones en vivo y análisis de los accidentes de 2024 frente a la lluvia.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="grid">
+    <h2>Cómo está montado</h2>
+    <div class="content">
+      <div class="pipe" aria-label="Flujo de datos">
+        <div><b>Conectores</b>uno por protocolo</div><i>→</i>
+        <div><b>Bus normalizado</b>mismo formato para todos</div><i>→</i>
+        <div><b>Reglas</b>cruzan fuentes</div><i>→</i>
+        <div><b>Alertas y rutas</b>mapa y panel</div>
+      </div>
+      <p>Cada fuente entra por un conector que traduce su protocolo a un mensaje común. Las reglas trabajan solo sobre ese mensaje, así que cambiar un conector simulado por el driver real no obliga a tocarlas.</p>
+      <figure style="margin-top:22px">
+        <div class="shot"><img src="panel.jpg" alt="Panel de control de la demo con tarjetas de fuentes transmitiendo, mensajes por minuto, velocidad media, alertas abiertas e incidentes, y debajo la tabla de conectores y la lista de alertas"></div>
+        <figcaption>Panel de control: estado de los conectores y alertas abiertas.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="grid">
+    <h2>Fuentes de datos</h2>
+    <div class="content">
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Protocolo</th><th>Qué trae</th><th>Origen</th></tr></thead>
+          <tbody>
+            <tr><td class="proto">GTFS-RT</td><td>Trenes de Rodalies de Catalunya (Renfe)</td><td><span class="tag real">Real</span></td></tr>
+            <tr><td class="proto">DATEX II</td><td>Balizas V16 conectadas (DGT 3.0)</td><td><span class="tag real">Real</span></td></tr>
+            <tr><td class="proto">REST</td><td>Lluvia, viento y temperatura (Open-Meteo)</td><td><span class="tag real">Real</span></td></tr>
+            <tr><td class="proto">REST</td><td>Reportes ciudadanos con foto</td><td><span class="tag real">Real</span></td></tr>
+            <tr><td class="proto">REST · ASP.NET Core</td><td>Llenado de contenedores, sobre ubicaciones reales de OpenStreetMap</td><td><span class="tag sim">Simulado</span></td></tr>
+            <tr><td class="proto">MQTT</td><td>Sensores de tráfico por zona</td><td><span class="tag sim">Simulado</span></td></tr>
+            <tr><td class="proto">Kafka</td><td>Incidentes de la Guàrdia Urbana</td><td><span class="tag sim">Simulado</span></td></tr>
+            <tr><td class="proto">WebSocket</td><td>Telemetría de trenes de metro</td><td><span class="tag sim">Simulado</span></td></tr>
+            <tr><td class="proto">PROFINET</td><td>PLC de las grúas del puerto</td><td><span class="tag sim">Simulado</span></td></tr>
+            <tr><td class="proto">PROFIBUS DP</td><td>Ventilación de túneles (CO)</td><td><span class="tag sim">Simulado</span></td></tr>
+            <tr><td class="proto">LoRaWAN</td><td>GPS de ambulancias</td><td><span class="tag sim">Simulado</span></td></tr>
+            <tr><td class="proto">IFC4</td><td>Modelo BIM de ejemplo del muelle de urgencias</td><td><span class="tag sim">Ejemplo</span></td></tr>
+            <tr><td class="proto">NGSI-v2 · FIWARE</td><td>Context Broker para smart city</td><td><span class="tag off">Preparado</span></td></tr>
+            <tr><td class="proto">SQL</td><td>Histórico y línea base de velocidades</td><td><span class="tag off">Preparado</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Es una demo. Los conectores simulados generan mensajes con la forma real de cada protocolo (topic de MQTT, partición y offset de Kafka, esclavo de Profibus), pero los valores son inventados. Los accidentes de 2024 y los contenedores son datos abiertos reales.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="grid">
+    <h2>Tecnología</h2>
+    <div class="content">
+      <dl class="stack">
+        <dt>Frontend</dt><dd>React, Three.js y MapLibre. Modelos IFC abiertos en el navegador con WebAssembly.</dd>
+        <dt>Backend</dt><dd>Funciones serverless en Cloudflare para los conectores y las reglas.</dd>
+        <dt>API de residuos</dt><dd>C# con ASP.NET Core (.NET 10) y Entity Framework Core sobre SQL Server y PostgreSQL. Panel web MVC con Razor.</dd>
+        <dt>Calidad</dt><dd>Pruebas con xUnit y documentación OpenAPI.</dd>
+        <dt>Despliegue</dt><dd>Cloudflare Pages desde GitHub, y la API en IIS con HTTPS.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="grid">
+    <h2>Quién lo ha hecho</h2>
+    <div class="content">
+      <p>Soy Christian Abad Santos, desarrollador full stack y Técnico Superior en Desarrollo de Aplicaciones Multiplataforma. Vivo cerca de Barcelona. He hecho este proyecto por mi cuenta para aprender cómo se construye un gemelo digital de ciudad de principio a fin, y busco trabajo en el sector de gemelos digitales, BIM y smart cities.</p>
+      <dl class="contact">
+        <dt>Correo</dt><dd><a href="mailto:christianabad2006@gmail.com">christianabad2006@gmail.com</a></dd>
+        <dt>LinkedIn</dt><dd><a href="https://www.linkedin.com/in/christian-abad-santos" target="_blank" rel="noopener">linkedin.com/in/christian-abad-santos</a></dd>
+        <dt>GitHub</dt><dd><a href="https://github.com/christianAbadSantos" target="_blank" rel="noopener">github.com/christianAbadSantos</a></dd>
+        <dt>Demo</dt><dd><a href="https://bcn-digital-twin.pages.dev/" target="_blank" rel="noopener">bcn-digital-twin.pages.dev</a></dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<footer>Capturas tomadas de la demo el 15 de noviembre de 2026. Mapa: OpenStreetMap vía OpenFreeMap. Relieve: ICGC.</footer>
+</div>
+</body>
+</html>
