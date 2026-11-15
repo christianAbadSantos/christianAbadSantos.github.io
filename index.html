@@ -2,241 +2,484 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gemelo Digital de Barcelona</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Christian Abad Santos · Gemelo Digital de Barcelona</title>
+<meta name="description" content="Portfolio de Christian Abad Santos, desarrollador full stack. Gemelo Digital de Barcelona: urbanismo, urgencias, residuos y movilidad en un mapa 3D con datos abiertos reales.">
+<meta property="og:title" content="Christian Abad Santos · Gemelo Digital de Barcelona">
+<meta property="og:description" content="Un mapa 3D de Barcelona con datos abiertos reales: urbanismo, urgencias, residuos y movilidad.">
+<meta property="og:image" content="https://christianabadsantos.github.io/img/urbanismo.jpg">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0c6f7a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230c6f7a'/%3E%3Ctext x='32' y='42' font-family='Arial' font-weight='700' font-size='28' fill='white' text-anchor='middle'%3ECA%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* Layout idea: a cartographer's sheet. Left-aligned column, a legend-style
-   margin of labels, and the data-source table as the centrepiece. */
 :root{
-  --paper:#f3f5f2;
-  --sheet:#ffffff;
-  --ink:#14263b;
-  --muted:#5b6b7c;
-  --rule:#d5dcd9;
-  --accent:#0c6f7a;      /* harbour teal */
-  --accent-ink:#ffffff;
-  --real:#1d7a46;
-  --real-bg:#e2f2e8;
-  --sim:#8a5a00;
-  --sim-bg:#f8ecd0;
-  --off:#5b6b7c;
-  --off-bg:#e6eaec;
+  --paper:#f4f6f3; --sheet:#ffffff; --ink:#132538; --muted:#5a6a7b; --rule:#dde3e0;
+  --accent:#0c6f7a; --accent-2:#0f8f8a; --accent-soft:#e1f1f1; --accent-ink:#ffffff;
+  --real:#1d7a46; --real-bg:#e3f3e9; --sim:#8a5a00; --sim-bg:#f9eed5;
+  --band:#132538; --band-ink:#f4f6f3;
+  --shadow:0 1px 2px rgba(19,37,56,.06),0 8px 24px rgba(19,37,56,.08);
+  --shadow-lg:0 2px 4px rgba(19,37,56,.06),0 24px 60px rgba(19,37,56,.16);
   --display:"Archivo","Arial Narrow",Arial,sans-serif;
   --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:14px;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --paper:#0e1822;--sheet:#15222f;--ink:#e6edf2;--muted:#9aa9b7;--rule:#293848;
-    --accent:#4fc3cf;--accent-ink:#06222a;
-    --real:#6fd49a;--real-bg:#153526;--sim:#e9be62;--sim-bg:#3a2e12;--off:#9aa9b7;--off-bg:#243240;
+    --paper:#0d1720; --sheet:#15222e; --ink:#e7eef3; --muted:#9db0bf; --rule:#253645;
+    --accent:#4fc3cf; --accent-2:#6fd8cf; --accent-soft:#16343a; --accent-ink:#06222a;
+    --real:#73d69e; --real-bg:#163526; --sim:#ebc066; --sim-bg:#3a2e12;
+    --band:#1b2d3b; --band-ink:#e7eef3;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.3);
+    --shadow-lg:0 2px 4px rgba(0,0,0,.3),0 24px 60px rgba(0,0,0,.45);
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --paper:#0e1822;--sheet:#15222f;--ink:#e6edf2;--muted:#9aa9b7;--rule:#293848;
-  --accent:#4fc3cf;--accent-ink:#06222a;
-  --real:#6fd49a;--real-bg:#153526;--sim:#e9be62;--sim-bg:#3a2e12;--off:#9aa9b7;--off-bg:#243240;
+  --paper:#0d1720; --sheet:#15222e; --ink:#e7eef3; --muted:#9db0bf; --rule:#253645;
+  --accent:#4fc3cf; --accent-2:#6fd8cf; --accent-soft:#16343a; --accent-ink:#06222a;
+  --real:#73d69e; --real-bg:#163526; --sim:#ebc066; --sim-bg:#3a2e12;
+  --band:#1b2d3b; --band-ink:#e7eef3;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.3);
+  --shadow-lg:0 2px 4px rgba(0,0,0,.3),0 24px 60px rgba(0,0,0,.45);
   color-scheme:dark;
 }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:72px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;overflow-x:hidden}
+img{max-width:100%;display:block}
 a{color:var(--accent)}
-a:focus-visible,.btn:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
-.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
-header{padding:44px 0 28px;border-bottom:1px solid var(--rule)}
-.coord{font-family:var(--mono);font-size:13px;color:var(--muted);letter-spacing:.02em;margin:0 0 14px}
-h1{font-family:var(--display);font-stretch:85%;font-weight:800;font-size:clamp(38px,7vw,68px);line-height:1;margin:0 0 16px;text-wrap:balance;letter-spacing:-.01em}
-.lede{font-size:20px;max-width:62ch;margin:0 0 24px;color:var(--ink)}
-.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
-.btn{display:inline-block;padding:11px 18px;border-radius:4px;font-weight:600;text-decoration:none;font-size:16px;border:1.5px solid var(--accent)}
-.btn.primary{background:var(--accent);color:var(--accent-ink)}
-.btn.ghost{color:var(--accent);background:transparent}
-.by{color:var(--muted);font-size:15px}
-section{padding:40px 0;border-bottom:1px solid var(--rule)}
-section:last-of-type{border-bottom:0}
-.grid{display:grid;grid-template-columns:190px 1fr;gap:28px}
-h2{font-family:var(--display);font-stretch:85%;font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:4px 0 0}
-.content>p{max-width:65ch;margin:0 0 14px}
-figure{margin:0}
-.shot{border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--sheet)}
-.shot img{display:block;width:100%;max-width:100%;height:auto}
-figcaption{font-size:14px;color:var(--muted);margin-top:8px}
-.shots{display:grid;grid-template-columns:1fr;gap:22px}
-.figs{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--rule);border-radius:6px;background:var(--sheet);margin-top:26px}
-.fig{padding:16px 18px;border-right:1px solid var(--rule)}
-.fig:last-child{border-right:0}
-.fig b{display:block;font-family:var(--display);font-stretch:85%;font-weight:800;font-size:34px;line-height:1.05;font-variant-numeric:tabular-nums}
-.fig span{font-size:14px;color:var(--muted)}
-ul.feat{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:1fr 1fr;gap:18px 28px}
-ul.feat li{border-top:2px solid var(--ink);padding-top:10px}
-ul.feat strong{display:block;font-weight:600;margin-bottom:2px}
-ul.feat span{color:var(--muted);font-size:16px}
-.pipe{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:6px 0 18px;font-family:var(--mono);font-size:14px}
-.pipe div{background:var(--sheet);border:1px solid var(--rule);border-radius:4px;padding:10px 14px;flex:1 1 150px}
-.pipe div b{display:block;font-family:var(--body);font-size:15px}
-.pipe i{align-self:center;font-style:normal;color:var(--muted)}
-.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--sheet)}
-table{border-collapse:collapse;width:100%;min-width:620px;font-size:15.5px}
-th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
-tr:last-child td{border-bottom:0}
-th{font-size:12.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600}
-td.proto{font-family:var(--mono);font-size:14px;white-space:nowrap}
-.tag{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:3px;white-space:nowrap}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+/* barra superior */
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 84%,transparent);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid transparent;transition:border-color .2s}
+.top.scrolled{border-bottom-color:var(--rule)}
+.top .wrap{display:flex;align-items:center;gap:16px;height:60px}
+.mark{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:600;white-space:nowrap}
+.mark i{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--accent);color:var(--accent-ink);font-style:normal;font-family:var(--display);font-weight:800;font-size:15px}
+.nav{display:flex;gap:4px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{color:var(--muted);text-decoration:none;font-size:15px;font-weight:500;padding:8px 12px;border-radius:999px;white-space:nowrap}
+.nav a:hover{color:var(--ink);background:var(--accent-soft)}
+.nav a.cta{background:var(--accent);color:var(--accent-ink)}
+.nav a.cta:hover{background:var(--accent-2)}
+
+/* portada */
+.hero{position:relative;padding:72px 0 48px;isolation:isolate}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;
+  background:
+    radial-gradient(60% 70% at 85% 10%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 70%),
+    linear-gradient(var(--rule) 1px,transparent 1px) 0 0/44px 44px,
+    linear-gradient(90deg,var(--rule) 1px,transparent 1px) 0 0/44px 44px;
+  -webkit-mask-image:linear-gradient(to bottom,#000 30%,transparent 95%);mask-image:linear-gradient(to bottom,#000 30%,transparent 95%);opacity:.75}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13px;color:var(--muted);background:var(--sheet);border:1px solid var(--rule);padding:6px 12px;border-radius:999px;margin:0 0 22px}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--real);box-shadow:0 0 0 4px var(--real-bg)}
+h1{font-family:var(--display);font-stretch:82%;font-weight:800;font-size:clamp(40px,8vw,80px);line-height:.98;letter-spacing:-.015em;margin:0 0 20px;text-wrap:balance}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{font-size:clamp(18px,2.3vw,21px);max-width:58ch;margin:0 0 28px}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:13px 20px;border-radius:12px;font-weight:600;font-size:16px;text-decoration:none;border:1.5px solid var(--accent);transition:transform .15s,background .15s,border-color .15s;cursor:pointer;font-family:inherit;min-height:48px}
+.btn svg{width:18px;height:18px;flex:none}
+.btn.primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 35%,transparent)}
+.btn.primary:hover{background:var(--accent-2);transform:translateY(-1px)}
+.btn.ghost{background:var(--sheet);color:var(--ink);border-color:var(--rule)}
+.btn.ghost:hover{border-color:var(--accent);transform:translateY(-1px)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:28px 0 0;padding:0;list-style:none}
+.chips li{font-family:var(--mono);font-size:13px;padding:5px 11px;border-radius:999px;background:var(--sheet);border:1px solid var(--rule);color:var(--muted)}
+
+/* galería en marco de navegador */
+.tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -20px 14px;padding:2px 20px 6px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;font:inherit;font-size:15px;font-weight:500;padding:9px 16px;border-radius:999px;border:1px solid var(--rule);background:var(--sheet);color:var(--muted);cursor:pointer;min-height:42px}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.browser{border-radius:var(--r);overflow:hidden;background:var(--sheet);box-shadow:var(--shadow-lg);border:1px solid var(--rule)}
+.browser .bar{display:flex;align-items:center;gap:7px;padding:10px 14px;border-bottom:1px solid var(--rule)}
+.browser .bar i{width:11px;height:11px;border-radius:50%;background:var(--rule);flex:none}
+.browser .bar span{margin-left:10px;font-family:var(--mono);font-size:12.5px;color:var(--muted);background:var(--paper);padding:3px 12px;border-radius:999px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.slides{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.slides::-webkit-scrollbar{display:none}
+.slide{flex:0 0 100%;scroll-snap-align:center;margin:0;aspect-ratio:16/9;background:var(--paper)}
+.slide img{width:100%;height:100%;object-fit:cover;object-position:top center}
+.gfoot{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-top:14px}
+.caption{margin:0;color:var(--muted);font-size:15.5px;max-width:75ch;min-height:3.2em}
+.caption b{color:var(--ink);font-weight:600}
+.dots{display:flex;gap:6px;flex:none;padding-top:8px}
+.dots button{width:8px;height:8px;border-radius:999px;border:0;padding:0;background:var(--rule);cursor:pointer;transition:width .2s,background .2s}
+.dots button[aria-current="true"]{width:24px;background:var(--accent)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:28px}
+.stat{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r);padding:18px 18px 16px;box-shadow:var(--shadow)}
+.stat b{display:block;font-family:var(--display);font-stretch:85%;font-weight:800;font-size:clamp(28px,4vw,38px);line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.stat span{display:block;margin-top:6px;font-size:14px;color:var(--muted);line-height:1.35}
+
+/* secciones */
+section{padding:72px 0}
+.kicker{font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin:0 0 10px}
+h2{font-family:var(--display);font-stretch:85%;font-weight:800;font-size:clamp(30px,4.6vw,46px);line-height:1.05;margin:0 0 14px;letter-spacing:-.01em;text-wrap:balance}
+.intro{color:var(--muted);max-width:62ch;margin:0 0 32px;font-size:18px}
+
+/* módulos */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r);padding:22px;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:color-mix(in srgb,var(--accent) 40%,var(--rule))}
+.ico{display:grid;place-items:center;width:46px;height:46px;border-radius:12px;background:var(--accent-soft);color:var(--accent);margin-bottom:14px}
+.ico svg{width:24px;height:24px}
+.card h3{font-family:var(--display);font-stretch:90%;font-weight:700;font-size:21px;margin:0 0 6px;line-height:1.2}
+.card p{margin:0;color:var(--muted);font-size:16px}
+.tagrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tag{display:inline-block;font-size:12px;font-weight:600;letter-spacing:.03em;padding:3px 9px;border-radius:999px;white-space:nowrap}
 .tag.real{color:var(--real);background:var(--real-bg)}
 .tag.sim{color:var(--sim);background:var(--sim-bg)}
-.tag.off{color:var(--off);background:var(--off-bg)}
-.note{font-size:15px;color:var(--muted);max-width:65ch;margin:14px 0 0}
-.stack{display:grid;grid-template-columns:140px 1fr;gap:8px 20px;margin:0}
-.stack dt{font-weight:600}
-.stack dd{margin:0;color:var(--ink)}
-.contact{display:grid;grid-template-columns:120px 1fr;gap:6px 20px;margin:14px 0 0;font-size:16px}
-.contact dt{color:var(--muted)}
-.contact dd{margin:0;font-family:var(--mono);font-size:15px;overflow-wrap:anywhere}
-footer{padding:22px 0 44px;color:var(--muted);font-size:14px}
-@media (max-width:760px){
-  .grid{grid-template-columns:1fr;gap:12px}
-  .figs{grid-template-columns:1fr 1fr}
-  .fig:nth-child(2){border-right:0}
-  .fig:nth-child(-n+2){border-bottom:1px solid var(--rule)}
-  ul.feat{grid-template-columns:1fr}
-  .stack,.contact{grid-template-columns:1fr;gap:2px}
-  .stack dd,.contact dd{margin-bottom:10px}
-  .pipe i{display:none}
+.tag.tech{color:var(--accent);background:var(--accent-soft)}
+
+/* cómo funciona */
+.flow{display:grid;grid-template-columns:repeat(4,1fr);counter-reset:step;margin:0;padding:0;list-style:none}
+.flow li{position:relative;padding:0 18px 0 0}
+.flow li::before{counter-increment:step;content:counter(step);display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-family:var(--display);font-weight:800;margin-bottom:14px;position:relative;z-index:1}
+.flow li::after{content:"";position:absolute;top:20px;left:40px;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--rule))}
+.flow li:last-child::after{display:none}
+.flow b{display:block;font-size:18px;margin-bottom:4px}
+.flow span{color:var(--muted);font-size:15.5px;display:block;padding-right:8px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:44px}
+.panel{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+.panel h3{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:18px}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.list li{display:flex;gap:12px;align-items:baseline;font-size:16px;padding-bottom:10px;border-bottom:1px dashed var(--rule)}
+.list li:last-child{border-bottom:0;padding-bottom:0}
+.list code{font-family:var(--mono);font-size:12.5px;color:var(--muted);background:var(--paper);padding:2px 7px;border-radius:6px;white-space:nowrap;flex:none;min-width:92px;text-align:center}
+.note{color:var(--muted);font-size:15px;margin:18px 0 0;max-width:75ch}
+
+/* stack */
+.stack{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.stack h3{font-size:13px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.07em;font-family:var(--mono);margin:0 0 14px}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pills span{font-size:15px;font-weight:500;padding:6px 12px;border-radius:10px;background:var(--paper);border:1px solid var(--rule)}
+
+/* contacto */
+.contact{display:grid;grid-template-columns:1.1fr .9fr;gap:32px;align-items:center;background:var(--band);color:var(--band-ink);border-radius:22px;padding:44px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden;isolation:isolate}
+.contact::after{content:"";position:absolute;right:-90px;top:-90px;width:320px;height:320px;border-radius:50%;z-index:-1;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 55%,transparent),transparent 70%);opacity:.55}
+.contact h2{color:var(--band-ink)}
+.contact p{margin:0;opacity:.85;max-width:52ch}
+.avatar{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.avatar i{display:grid;place-items:center;width:58px;height:58px;border-radius:16px;background:var(--accent);color:var(--accent-ink);font-style:normal;font-family:var(--display);font-weight:800;font-size:22px;flex:none}
+.avatar b{display:block;font-size:19px}
+.avatar small{opacity:.75;font-size:14px}
+.links{display:grid;gap:10px}
+.links a,.links button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px 16px;border-radius:12px;background:color-mix(in srgb,var(--band-ink) 8%,transparent);border:1px solid color-mix(in srgb,var(--band-ink) 16%,transparent);color:var(--band-ink);text-decoration:none;font:inherit;font-size:16px;cursor:pointer;transition:background .15s,transform .15s;min-height:52px}
+.links a:hover,.links button:hover{background:color-mix(in srgb,var(--band-ink) 15%,transparent);transform:translateX(3px)}
+.links svg{width:20px;height:20px;flex:none;opacity:.9}
+.links span{flex:1;min-width:0;overflow-wrap:anywhere}
+.links small{opacity:.65;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+footer{padding:12px 0 48px;color:var(--muted);font-size:14px;text-align:center}
+
+/* aparición suave */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+  .card,.btn,.links a,.links button{transition:none}
+}
+
+/* tablet */
+@media (max-width:960px){
+  .cards,.stack,.stats{grid-template-columns:1fr 1fr}
+  .contact{grid-template-columns:1fr;padding:32px}
+}
+/* móvil */
+@media (max-width:640px){
+  body{font-size:16px}
+  .wrap{padding:0 16px}
+  .top .wrap{height:56px;gap:10px}
+  .mark span{display:none}
+  .nav a{padding:7px 10px;font-size:14px}
+  .hero{padding:40px 0 32px}
+  .actions .btn{flex:1 1 100%}
+  section{padding:52px 0}
+  .tabs{margin:0 -16px 12px;padding:2px 16px 6px}
+  .gfoot{flex-direction:column-reverse;gap:6px}
+  .dots{align-self:center;padding-top:2px}
+  .stats{gap:10px}
+  .stat{padding:14px}
+  .cards,.split,.stack{grid-template-columns:1fr}
+  .flow{grid-template-columns:1fr;gap:20px}
+  .flow li{display:grid;grid-template-columns:40px 1fr;column-gap:14px;padding:0}
+  .flow li::before{margin:0;grid-row:span 2}
+  .flow li::after{top:44px;left:19px;right:auto;bottom:-16px;width:2px;height:auto;background:linear-gradient(var(--accent),var(--rule))}
+  .browser .bar{padding:8px 10px}
+  .browser .bar i{width:9px;height:9px}
+  .contact{padding:26px 18px;border-radius:18px}
+  .list code{min-width:80px}
+  .links small{display:none}
 }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-<header>
-  <p class="coord">41.3874° N · 2.1686° E · proyecto personal · 2026</p>
-  <h1>Gemelo Digital de Barcelona</h1>
-  <p class="lede">Una plataforma web que reúne en un mapa 3D lo que está pasando en la ciudad: trenes, tráfico, meteorología, accidentes, residuos y urgencias. Mezcla datos abiertos reales con sensores simulados, y cruza todo con reglas para generar alertas.</p>
-  <div class="actions">
-    <a class="btn primary" href="https://bcn-digital-twin.pages.dev/" target="_blank" rel="noopener">Abrir la demo</a>
-    <a class="btn ghost" href="https://github.com/christianAbadSantos/bcn-digital-twin" target="_blank" rel="noopener">Ver el código en GitHub</a>
-    <span class="by">Christian Abad Santos · desarrollador full stack</span>
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="mark" href="#inicio" aria-label="Inicio"><i>CA</i><span>Christian Abad Santos</span></a>
+    <nav class="nav" aria-label="Secciones">
+      <a href="#proyecto">Proyecto</a>
+      <a href="#modulos">Módulos</a>
+      <a href="#stack">Stack</a>
+      <a class="cta" href="#contacto">Contacto</a>
+    </nav>
   </div>
 </header>
 
-<section>
-  <div class="shots">
-    <figure>
-      <div class="shot"><img src="mapa.jpg" alt="Vista de mapa 3D de la demo, con indicadores de la ciudad arriba, puntos negros de accidentes a la izquierda, capas activables sobre el mapa y el panel de fuentes de datos a la derecha"></div>
-      <figcaption>Vista de mapa: indicadores en vivo, capas activables y el panel de fuentes de datos con el último mensaje de cada conector.</figcaption>
-    </figure>
-  </div>
-  <div class="figs">
-    <div class="fig"><b>14</b><span>fuentes de datos conectadas</span></div>
-    <div class="fig"><b>7.495</b><span>contenedores reales de la ciudad</span></div>
-    <div class="fig"><b>7.536</b><span>accidentes de 2024 (Guàrdia Urbana)</span></div>
-    <div class="fig"><b>~75</b><span>trenes de Rodalies seguidos en vivo</span></div>
-  </div>
-</section>
+<main id="inicio">
 
-<section>
-  <div class="grid">
-    <h2>Qué hace</h2>
-    <div class="content">
-      <ul class="feat">
-        <li><strong>Ciudad en 3D</strong><span>Edificios, relieve del ICGC, ortofoto, metro, árboles y puerto como capas que se encienden y apagan sobre el mapa.</span></li>
-        <li><strong>Trenes y balizas reales</strong><span>Posición de los trenes de Rodalies y balizas V16 encendidas, leídas de los datos abiertos de Renfe y la DGT.</span></li>
-        <li><strong>Alertas con reglas</strong><span>Una regla cruza varias fuentes. Por ejemplo, velocidad baja más un incidente abierto en el mismo cruce dispara una alerta crítica.</span></li>
-        <li><strong>Escenarios</strong><span>Lluvia fuerte, viento de 65 km/h o un choque en Corts Catalanes con Gràcia, para ver cómo reacciona el sistema.</span></li>
-        <li><strong>Recogida de residuos</strong><span>Nivel de llenado por contenedor, planificación de rutas de recogida e indicadores, servidos por una API propia en .NET.</span></li>
-        <li><strong>Urgencias con BIM</strong><span>Ambulancias en ruta hacia el Hospital Clínic, con las bahías de urgencias leídas de un modelo IFC abierto en el navegador.</span></li>
-        <li><strong>Reportes ciudadanos</strong><span>Cualquier persona con sesión iniciada puede marcar una incidencia en el mapa y adjuntar una foto.</span></li>
-        <li><strong>Panel de control</strong><span>Resumen de operaciones en vivo y análisis de los accidentes de 2024 frente a la lluvia.</span></li>
-      </ul>
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow"><span class="dot" aria-hidden="true"></span>Desarrollador full stack · Barcelona</p>
+    <h1>Hola, soy Christian.<br>Construyo un <em>gemelo digital</em> de Barcelona.</h1>
+    <p class="lede">Un mapa 3D que junta lo que pasa en la ciudad: urbanismo, urgencias, residuos, trenes y tráfico. Mezcla datos abiertos reales con sensores simulados y lo cruza todo con reglas para generar alertas.</p>
+    <div class="actions">
+      <a class="btn primary" href="https://bcn-digital-twin.pages.dev/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3l14 9-14 9V3z"/></svg>Abrir la demo en vivo</a>
+      <a class="btn ghost" href="https://github.com/christianAbadSantos/bcn-digital-twin" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>Ver el código</a>
     </div>
+    <ul class="chips" aria-label="Tecnologías principales">
+      <li>C# · .NET 10</li><li>React</li><li>SQL Server</li><li>MapLibre · Three.js</li><li>BIM · IFC</li><li>Cloudflare</li>
+    </ul>
   </div>
 </section>
 
-<section>
-  <div class="grid">
-    <h2>Cómo está montado</h2>
-    <div class="content">
-      <div class="pipe" aria-label="Flujo de datos">
-        <div><b>Conectores</b>uno por protocolo</div><i>→</i>
-        <div><b>Bus normalizado</b>mismo formato para todos</div><i>→</i>
-        <div><b>Reglas</b>cruzan fuentes</div><i>→</i>
-        <div><b>Alertas y rutas</b>mapa y panel</div>
+<section id="proyecto" style="padding-top:8px">
+  <div class="wrap">
+    <div class="tabs" role="tablist" aria-label="Capturas del proyecto">
+      <button class="tab" role="tab" aria-selected="true">Urbanismo</button>
+      <button class="tab" role="tab" aria-selected="false">Mapa en vivo</button>
+      <button class="tab" role="tab" aria-selected="false">Urgencias</button>
+      <button class="tab" role="tab" aria-selected="false">Muelle BIM</button>
+      <button class="tab" role="tab" aria-selected="false">Panel de control</button>
+      <button class="tab" role="tab" aria-selected="false">Ciudad 3D</button>
+    </div>
+    <div class="browser">
+      <div class="bar" aria-hidden="true"><i></i><i></i><i></i><span>bcn-digital-twin.pages.dev</span></div>
+      <div class="slides" id="slides">
+        <figure class="slide"><img src="img/urbanismo.jpg" alt="Mapa del Eixample coloreado por calificación urbanística y ficha del Catastro de un edificio de Aragó 254"></figure>
+        <figure class="slide"><img src="img/mapa.jpg" alt="Mapa 3D con indicadores de la ciudad, puntos negros de accidentes, capas y el panel de fuentes de datos" loading="lazy"></figure>
+        <figure class="slide"><img src="img/urgencias.jpg" alt="Ambulancias en ruta hacia el Hospital Clínic con su hora de llegada" loading="lazy"></figure>
+        <figure class="slide"><img src="img/muelle-ifc.jpg" alt="Bahías del muelle de urgencias leídas de un modelo IFC, libres, reservadas u ocupadas" loading="lazy"></figure>
+        <figure class="slide"><img src="img/panel.jpg" alt="Panel de control con el estado de los conectores y las alertas abiertas" loading="lazy"></figure>
+        <figure class="slide"><img src="img/escena-3d.jpg" alt="Escena 3D de la Sagrada Família con los edificios reales de OpenStreetMap" loading="lazy"></figure>
       </div>
-      <p>Cada fuente entra por un conector que traduce su protocolo a un mensaje común. Las reglas trabajan solo sobre ese mensaje, así que cambiar un conector simulado por el driver real no obliga a tocarlas.</p>
-      <figure style="margin-top:22px">
-        <div class="shot"><img src="panel.jpg" alt="Panel de control de la demo con tarjetas de fuentes transmitiendo, mensajes por minuto, velocidad media, alertas abiertas e incidentes, y debajo la tabla de conectores y la lista de alertas"></div>
-        <figcaption>Panel de control: estado de los conectores y alertas abiertas.</figcaption>
-      </figure>
+    </div>
+    <div class="gfoot">
+      <p class="caption" id="caption" aria-live="polite"></p>
+      <div class="dots" id="dots"></div>
+    </div>
+
+    <div class="stats">
+      <div class="stat reveal"><b>14</b><span>fuentes de datos conectadas</span></div>
+      <div class="stat reveal"><b>12.581</b><span>zonas urbanísticas de la ciudad</span></div>
+      <div class="stat reveal"><b>7.495</b><span>contenedores reales con sensor</span></div>
+      <div class="stat reveal"><b>49</b><span>tests automáticos en cada cambio</span></div>
     </div>
   </div>
 </section>
 
-<section>
-  <div class="grid">
-    <h2>Fuentes de datos</h2>
-    <div class="content">
-      <div class="tablewrap">
-        <table>
-          <thead><tr><th>Protocolo</th><th>Qué trae</th><th>Origen</th></tr></thead>
-          <tbody>
-            <tr><td class="proto">GTFS-RT</td><td>Trenes de Rodalies de Catalunya (Renfe)</td><td><span class="tag real">Real</span></td></tr>
-            <tr><td class="proto">DATEX II</td><td>Balizas V16 conectadas (DGT 3.0)</td><td><span class="tag real">Real</span></td></tr>
-            <tr><td class="proto">REST</td><td>Lluvia, viento y temperatura (Open-Meteo)</td><td><span class="tag real">Real</span></td></tr>
-            <tr><td class="proto">REST</td><td>Reportes ciudadanos con foto</td><td><span class="tag real">Real</span></td></tr>
-            <tr><td class="proto">REST · ASP.NET Core</td><td>Llenado de contenedores, sobre ubicaciones reales de OpenStreetMap</td><td><span class="tag sim">Simulado</span></td></tr>
-            <tr><td class="proto">MQTT</td><td>Sensores de tráfico por zona</td><td><span class="tag sim">Simulado</span></td></tr>
-            <tr><td class="proto">Kafka</td><td>Incidentes de la Guàrdia Urbana</td><td><span class="tag sim">Simulado</span></td></tr>
-            <tr><td class="proto">WebSocket</td><td>Telemetría de trenes de metro</td><td><span class="tag sim">Simulado</span></td></tr>
-            <tr><td class="proto">PROFINET</td><td>PLC de las grúas del puerto</td><td><span class="tag sim">Simulado</span></td></tr>
-            <tr><td class="proto">PROFIBUS DP</td><td>Ventilación de túneles (CO)</td><td><span class="tag sim">Simulado</span></td></tr>
-            <tr><td class="proto">LoRaWAN</td><td>GPS de ambulancias</td><td><span class="tag sim">Simulado</span></td></tr>
-            <tr><td class="proto">IFC4</td><td>Modelo BIM de ejemplo del muelle de urgencias</td><td><span class="tag sim">Ejemplo</span></td></tr>
-            <tr><td class="proto">NGSI-v2 · FIWARE</td><td>Context Broker para smart city</td><td><span class="tag off">Preparado</span></td></tr>
-            <tr><td class="proto">SQL</td><td>Histórico y línea base de velocidades</td><td><span class="tag off">Preparado</span></td></tr>
-          </tbody>
-        </table>
+<section id="modulos">
+  <div class="wrap">
+    <p class="kicker">Qué hace</p>
+    <h2>Seis módulos, una sola ciudad</h2>
+    <p class="intro">Cada módulo responde a una pregunta concreta de quien gestiona Barcelona. Todos comparten el mismo mapa y los mismos datos.</p>
+    <div class="cards">
+      <article class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg></div>
+        <h3>Urbanismo</h3>
+        <p>Qué se puede construir en cada manzana y qué hay construido. Clic en un edificio y sale su ficha del Catastro: año, plantas, uso y edificabilidad.</p>
+        <div class="tagrow"><span class="tag real">Generalitat</span><span class="tag real">Catastro en directo</span></div>
+      </article>
+      <article class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div>
+        <h3>Urgencias</h3>
+        <p>Ambulancias en ruta al Clínic con su hora de llegada según el tráfico y las balizas V16, y la bahía del muelle que les toca, leída de un modelo IFC.</p>
+        <div class="tagrow"><span class="tag real">DGT V16</span><span class="tag sim">GPS LoRaWAN</span><span class="tag tech">IFC</span></div>
+      </article>
+      <article class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 13h12l1-13M9 7V4h6v3"/></svg></div>
+        <h3>Residuos</h3>
+        <p>Llenado de cada contenedor y la ruta de recogida más corta desde la base, en varios viajes según lo que cabe en el camión. Con API propia en .NET.</p>
+        <div class="tagrow"><span class="tag real">7.495 contenedores</span><span class="tag tech">.NET · SQL Server</span></div>
+      </article>
+      <article class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2-4M15 21l2-4"/></svg></div>
+        <h3>Movilidad</h3>
+        <p>Trenes de Rodalies en tiempo real, metro 3D en movimiento, tráfico por zonas y un recomendador de rutas que cambia de opinión con los datos en vivo.</p>
+        <div class="tagrow"><span class="tag real">Renfe GTFS-RT</span><span class="tag sim">Tráfico</span></div>
+      </article>
+      <article class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3L2 20h20L12 3z"/><path d="M12 10v4M12 17v.5"/></svg></div>
+        <h3>Alertas y accidentes</h3>
+        <p>Reglas que cruzan varias fuentes: choque + atasco + lluvia en la misma zona dispara una alerta crítica. Más 7.536 accidentes reales de 2024 frente a la lluvia.</p>
+        <div class="tagrow"><span class="tag real">Guàrdia Urbana</span><span class="tag real">Open-Meteo</span></div>
+      </article>
+      <article class="card reveal">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l9 5v10l-9 5-9-5V7l9-5z"/><path d="M12 22V12M21 7l-9 5-9-5"/></svg></div>
+        <h3>Ciudad 3D y BIM</h3>
+        <p>Edificios reales de OpenStreetMap con relieve de 5 m y ortofoto, cargados por teselas en segundo plano, y modelos BIM del Port abiertos en el navegador.</p>
+        <div class="tagrow"><span class="tag real">OSM · ICGC</span><span class="tag tech">WebAssembly</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="como">
+  <div class="wrap">
+    <p class="kicker">Cómo está montado</p>
+    <h2>De la fuente al mapa en cuatro pasos</h2>
+    <p class="intro">Cambiar un sensor simulado por uno real solo obliga a tocar su conector. El resto del sistema sigue igual.</p>
+    <ol class="flow">
+      <li class="reveal"><b>Conectores</b><span>Uno por protocolo: MQTT, Kafka, GTFS-RT, DATEX II, REST, LoRaWAN…</span></li>
+      <li class="reveal"><b>Bus normalizado</b><span>Todos los mensajes pasan a un mismo formato.</span></li>
+      <li class="reveal"><b>Reglas</b><span>Cruzan varias fuentes en la misma zona y deciden.</span></li>
+      <li class="reveal"><b>Mapa y panel</b><span>Alertas, rutas e indicadores en vivo.</span></li>
+    </ol>
+
+    <div class="split">
+      <div class="panel reveal">
+        <h3><span class="tag real">Real</span>Datos abiertos</h3>
+        <ul class="list">
+          <li><code>GTFS-RT</code>Trenes de Rodalies (Renfe)</li>
+          <li><code>DATEX II</code>Balizas V16 encendidas (DGT)</li>
+          <li><code>REST</code>Calificación del suelo y Catastro</li>
+          <li><code>REST</code>Tiempo y radar de lluvia</li>
+          <li><code>CSV</code>Accidentes de 2024 y contenedores</li>
+        </ul>
       </div>
-      <p class="note">Es una demo. Los conectores simulados generan mensajes con la forma real de cada protocolo (topic de MQTT, partición y offset de Kafka, esclavo de Profibus), pero los valores son inventados. Los accidentes de 2024 y los contenedores son datos abiertos reales.</p>
+      <div class="panel reveal">
+        <h3><span class="tag sim">Simulado</span>Sensores de ejemplo</h3>
+        <ul class="list">
+          <li><code>MQTT</code>Sensores de tráfico por zona</li>
+          <li><code>Kafka</code>Incidentes de la Guàrdia Urbana</li>
+          <li><code>LoRaWAN</code>GPS de ambulancias y llenado de contenedores</li>
+          <li><code>WebSocket</code>Telemetría del metro</li>
+          <li><code>PROFINET</code>PLC de las grúas del puerto</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">Los sensores simulados generan mensajes con la forma real de cada protocolo, pero sus valores son inventados. La web marca siempre qué dato es real y cuál no.</p>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <p class="kicker">Tecnología</p>
+    <h2>Con qué está hecho</h2>
+    <p class="intro">Frontend, backend y base de datos propios, desplegados en la nube y con tests que se ejecutan solos en cada cambio.</p>
+    <div class="stack">
+      <div class="panel reveal"><h3>Frontend</h3><div class="pills"><span>React</span><span>MapLibre</span><span>Three.js</span><span>web-ifc (WASM)</span><span>Vite</span></div></div>
+      <div class="panel reveal"><h3>Backend</h3><div class="pills"><span>C# · ASP.NET Core</span><span>EF Core</span><span>Razor MVC</span><span>OpenAPI</span></div></div>
+      <div class="panel reveal"><h3>Datos</h3><div class="pills"><span>SQL Server</span><span>PostgreSQL</span><span>Cloudflare D1 · R2</span></div></div>
+      <div class="panel reveal"><h3>Calidad y nube</h3><div class="pills"><span>xUnit</span><span>Vitest</span><span>GitHub Actions</span><span>Cloudflare Pages</span><span>IIS</span></div></div>
     </div>
   </div>
 </section>
 
-<section>
-  <div class="grid">
-    <h2>Tecnología</h2>
-    <div class="content">
-      <dl class="stack">
-        <dt>Frontend</dt><dd>React, Three.js y MapLibre. Modelos IFC abiertos en el navegador con WebAssembly.</dd>
-        <dt>Backend</dt><dd>Funciones serverless en Cloudflare para los conectores y las reglas.</dd>
-        <dt>API de residuos</dt><dd>C# con ASP.NET Core (.NET 10) y Entity Framework Core sobre SQL Server y PostgreSQL. Panel web MVC con Razor.</dd>
-        <dt>Calidad</dt><dd>Pruebas con xUnit y documentación OpenAPI.</dd>
-        <dt>Despliegue</dt><dd>Cloudflare Pages desde GitHub, y la API en IIS con HTTPS.</dd>
-      </dl>
+<section id="contacto">
+  <div class="wrap">
+    <div class="contact reveal">
+      <div>
+        <div class="avatar"><i>CA</i><div><b>Christian Abad Santos</b><small>Técnico Superior en DAM · Barcelona</small></div></div>
+        <h2>¿Hablamos?</h2>
+        <p>Busco mi primer puesto como desarrollador en gemelos digitales, BIM, GIS o smart city. He hecho este proyecto por mi cuenta para aprender a construir uno de principio a fin.</p>
+      </div>
+      <div class="links">
+        <a href="mailto:christianabad2006@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          <span>Enviar un correo</span><small>christianabad2006@gmail.com</small></a>
+        <button type="button" id="copy">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          <span id="copy-txt">Copiar el correo</span></button>
+        <a href="https://www.linkedin.com/in/christian-abad-santos" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4V21H3V9.75zM9.5 9.75h3.8v1.6h.06c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.77 2.65 4.77 6.1V21h-4v-4.97c0-1.19-.02-2.71-1.65-2.71-1.65 0-1.9 1.29-1.9 2.62V21h-4V9.75z"/></svg>
+          <span>LinkedIn</span><small>christian-abad-santos</small></a>
+        <a href="https://github.com/christianAbadSantos" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>
+          <span>GitHub</span><small>christianAbadSantos</small></a>
+      </div>
     </div>
   </div>
 </section>
 
-<section>
-  <div class="grid">
-    <h2>Quién lo ha hecho</h2>
-    <div class="content">
-      <p>Soy Christian Abad Santos, desarrollador full stack y Técnico Superior en Desarrollo de Aplicaciones Multiplataforma. Vivo cerca de Barcelona. He hecho este proyecto por mi cuenta para aprender cómo se construye un gemelo digital de ciudad de principio a fin, y busco trabajo en el sector de gemelos digitales, BIM y smart cities.</p>
-      <dl class="contact">
-        <dt>Correo</dt><dd><a href="mailto:christianabad2006@gmail.com">christianabad2006@gmail.com</a></dd>
-        <dt>LinkedIn</dt><dd><a href="https://www.linkedin.com/in/christian-abad-santos" target="_blank" rel="noopener">linkedin.com/in/christian-abad-santos</a></dd>
-        <dt>GitHub</dt><dd><a href="https://github.com/christianAbadSantos" target="_blank" rel="noopener">github.com/christianAbadSantos</a></dd>
-        <dt>Demo</dt><dd><a href="https://bcn-digital-twin.pages.dev/" target="_blank" rel="noopener">bcn-digital-twin.pages.dev</a></dd>
-      </dl>
-    </div>
-  </div>
-</section>
+</main>
 
-<footer>Capturas tomadas de la demo el 15 de noviembre de 2026. Mapa: OpenStreetMap vía OpenFreeMap. Relieve: ICGC.</footer>
-</div>
+<footer>
+  <div class="wrap">© 2026 Christian Abad Santos · Mapa: OpenStreetMap vía OpenFreeMap · Relieve: ICGC · Urbanismo: Generalitat de Catalunya y Catastro</div>
+</footer>
+
+<script>
+// galería: pestañas, deslizar con el dedo y puntos sincronizados
+(() => {
+  const caps = [
+    ['Urbanismo.', 'Cada manzana coloreada según lo que se puede construir. Al hacer clic en un edificio, ficha del Catastro en directo.'],
+    ['Mapa en vivo.', 'Indicadores de la ciudad, capas que se encienden y apagan, y el último mensaje de cada fuente de datos.'],
+    ['Urgencias.', 'Ambulancias en ruta hacia el Clínic con su hora de llegada, recalculada con el tráfico y las balizas V16.'],
+    ['Muelle BIM.', 'Bahías del muelle de urgencias leídas de un modelo IFC: libres, reservadas u ocupadas.'],
+    ['Panel de control.', 'Estado de los conectores, mensajes por minuto y alertas abiertas.'],
+    ['Ciudad 3D.', 'La Sagrada Família y los edificios reales de OpenStreetMap, con relieve del ICGC.'],
+  ]
+  const slides = document.getElementById('slides')
+  const tabs = [...document.querySelectorAll('.tab')]
+  const cap = document.getElementById('caption')
+  const dots = caps.map((_, i) => {
+    const b = document.createElement('button')
+    b.type = 'button'
+    b.setAttribute('aria-label', 'Ver captura ' + (i + 1) + ' de ' + caps.length)
+    b.onclick = () => go(i)
+    document.getElementById('dots').appendChild(b)
+    return b
+  })
+  const smooth = () => (matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth')
+  let cur = -1
+  function mark(i) {
+    i = Math.max(0, Math.min(caps.length - 1, i))
+    if (i === cur) return
+    cur = i
+    tabs.forEach((t, k) => t.setAttribute('aria-selected', String(k === i)))
+    dots.forEach((d, k) => d.setAttribute('aria-current', String(k === i)))
+    cap.innerHTML = '<b>' + caps[i][0] + '</b> ' + caps[i][1]
+    const bar = tabs[i].parentElement
+    bar.scrollTo({ left: tabs[i].offsetLeft - bar.clientWidth / 2 + tabs[i].clientWidth / 2, behavior: smooth() })
+  }
+  function go(i) {
+    slides.scrollTo({ left: i * slides.clientWidth, behavior: smooth() })
+    mark(i)
+  }
+  tabs.forEach((t, i) => (t.onclick = () => go(i)))
+  let raf = 0
+  slides.addEventListener('scroll', () => {
+    cancelAnimationFrame(raf)
+    raf = requestAnimationFrame(() => mark(Math.round(slides.scrollLeft / slides.clientWidth)))
+  }, { passive: true })
+  addEventListener('resize', () => slides.scrollTo({ left: cur * slides.clientWidth }))
+  mark(0)
+})()
+
+// borde de la barra superior al bajar
+addEventListener('scroll', () => document.getElementById('top').classList.toggle('scrolled', scrollY > 8), { passive: true })
+
+// aparición suave al entrar en pantalla
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) } }), { rootMargin: '0px 0px -8% 0px' })
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el))
+} else document.querySelectorAll('.reveal').forEach((el) => el.classList.add('in'))
+
+// copiar el correo
+document.getElementById('copy').onclick = async () => {
+  const t = document.getElementById('copy-txt')
+  try { await navigator.clipboard.writeText('christianabad2006@gmail.com'); t.textContent = '¡Copiado!' }
+  catch { t.textContent = 'christianabad2006@gmail.com' }
+  setTimeout(() => (t.textContent = 'Copiar el correo'), 2200)
+}
+</script>
 </body>
 </html>
